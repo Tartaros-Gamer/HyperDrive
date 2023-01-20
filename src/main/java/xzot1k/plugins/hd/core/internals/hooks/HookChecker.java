@@ -80,20 +80,12 @@ public class HookChecker {
         if (getFactionsType() != null && checkType != CheckType.WARP) {
             switch (getFactionsType()) {
                 case SABER:
+                case UUID:
                     com.massivecraft.factions.Faction factionAtLocation = com.massivecraft.factions.Board
                             .getInstance().getFactionAt(new com.massivecraft.factions.FLocation(location));
                     com.massivecraft.factions.FPlayer saberPlayer = com.massivecraft.factions.FPlayers.getInstance().getByPlayer(player);
                     if (factionAtLocation != null && (!ownershipCheck || (!factionAtLocation.isWilderness()
                             && !factionAtLocation.getId().equalsIgnoreCase(saberPlayer.getFaction().getId()))))
-                        return true;
-                    break;
-                case UUID:
-                    com.massivecraft.factions.Faction uuidFaction = com.massivecraft.factions.Board.getInstance()
-                            .getFactionAt(new com.massivecraft.factions.FLocation(location));
-                    com.massivecraft.factions.FPlayer uuidPlayer = com.massivecraft.factions.FPlayers.getInstance().getByPlayer(player);
-                    if (uuidFaction != null && (!ownershipCheck || (!uuidFaction.getId()
-                            .equalsIgnoreCase(com.massivecraft.factions.Factions.getInstance().getWilderness().getId())
-                            && !uuidFaction.getId().equalsIgnoreCase(uuidPlayer.getFaction().getId()))))
                         return true;
                     break;
                 case MASSIVE:

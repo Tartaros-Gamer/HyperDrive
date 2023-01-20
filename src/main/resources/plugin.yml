@@ -1,5 +1,5 @@
 name: HyperDrive
-version: '${project.version}'
+version: '${version}'
 api-version: 1.13
 author: XZot1K
 main: xzot1k.plugins.hd.HyperDrive

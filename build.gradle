@@ -1,0 +1,124 @@
+import java.text.SimpleDateFormat
+
+plugins {
+    id 'java'
+    id 'maven-publish'
+	id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+
+logger.lifecycle("""
+*******************************************
+You are building HyperDrive.
+
+Though the plugin has been released as 'Open-Source'. 
+If possible, please support the plugin by purchasing the plugin on the main page.
+
+SpigotMC: https://www.spigotmc.org/resources/17184/
+
+Output files will be in build/libs
+*******************************************
+""")
+
+repositories {
+    mavenLocal()
+	mavenCentral()
+    maven { url = uri('https://jitpack.io') }
+	// spigotmc
+    maven { url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/')	}
+	// papermc
+    maven { url = uri('https://papermc.io/repo/repository/maven-public/') }
+	// velocity
+    maven { url = uri('https://nexus.velocitypowered.com/repository/maven-public/') }
+	// bungee
+    maven { url = uri('https://oss.sonatype.org/content/repositories/snapshots') }
+	// placeholderapi
+    maven {  url = uri('https://repo.extendedclip.com/content/repositories/placeholderapi/') }
+	//enginehub
+    maven { url = uri('https://maven.enginehub.org/repo/') }
+	//greifdefender
+    maven { url = uri('https://repo.glaremasters.me/repository/bloodshot') }
+	// CodeMc
+    maven { url = uri('https://repo.codemc.org/repository/maven-public') }
+	// essentialsx
+    maven { url = uri('https://repo.essentialsx.net/releases/') }
+    // factionsuuid
+    maven { url = uri('https://ci.ender.zone/plugin/repository/everything/') }
+}
+
+dependencies {
+    implementation 'io.papermc:paperlib:1.0.7'
+    implementation 'com.udojava:EvalEx:2.7'
+    implementation 'org.jetbrains:annotations:23.1.0'
+    compileOnly 'com.velocitypowered:velocity-api:3.1.1'
+    compileOnly 'net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT'
+    // compileOnly 'org.spigotmc:spigot:1.19.3-R0.1-SNAPSHOT'
+    compileOnly 'me.clip:placeholderapi:2.11.1'
+    compileOnly 'com.arcaniax:HeadDatabase-API:1.3.1'
+    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.0-SNAPSHOT'
+    compileOnly 'com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT'
+    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.7-SNAPSHOT'
+    compileOnly 'com.griefdefender:api:2.1.0-SNAPSHOT'
+    compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
+    compileOnly 'com.wasteofplastic:askyblock:3.0.9.4'
+    compileOnly 'com.github.LlmDl:Towny:0.98.3.12'
+    compileOnly 'com.github.TechFortress:GriefPrevention:16.18'
+    // compileOnly 'com.github.SaberLLC:Saber-Factions:2.4.0-RC'
+    compileOnly 'com.massivecraft:Factions:1.6.9.5-U0.6.21'
+    compileOnly 'net.essentialsx:EssentialsX:2.19.4'
+    compileOnly fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+group = 'xzot1k.plugins.hd'
+def pluginVersion = '5.5.3 (Build 1)'
+version = pluginVersion
+description = 'HyperDrive'
+java.sourceCompatibility = JavaVersion.VERSION_1_8
+
+ext {
+    shadePath = 'xzot1k.plugins.hd.lib'
+}
+
+compileJava.dependsOn clean
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+
+artifacts {
+    archives shadowJar
+}
+
+processResources {
+    filesMatching(['plugin.yml']) {
+        expand version: pluginVersion
+    }
+}
+
+shadowJar {
+    relocate("io.papermc.lib", "${shadePath}.papermc")
+    relocate("com.udojava.evalex", "${shadePath}.evalex")
+    relocate("org.intellij.lang.annotations", "${shadePath}.org.intellij.lang.annotations")
+    relocate("org.jetbrains.annotations", "${shadePath}.org.jetbrains.annotations")
+	manifest {
+        attributes(
+                'Built-By': System.properties['user.name'],
+                'Version': pluginVersion,
+                'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss.SSSZ").format(new Date()),
+                'Created-By': "Gradle ${gradle.gradleVersion}",
+                'Build-Jdk': "${System.properties['java.version']} " +
+                        "(${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+                'Build-OS': "${System.properties['os.name']} ${System.properties['os.arch']} " +
+                        "${System.properties['os.version']}"
+        )
+    }
+}
